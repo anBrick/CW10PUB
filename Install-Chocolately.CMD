@@ -20,6 +20,7 @@ rem install mandatory apps
 TIMEOUT /T 3
 choco install autohotkey.portable
 
+choco install 7zip
 choco install vcredist-all
 choco install LAVFilters
 choco install vlc

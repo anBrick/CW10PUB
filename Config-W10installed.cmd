@@ -159,6 +159,8 @@ rem configure AV Exclusions
 color 2f
 timeout /t 6
 rem install KMS ServersManager
+for %%I in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do if exist "%%I:\\OOB\\kmsmgr.zip" set OIN="%%I:\OOB"
+powershell.exe -nologo -noprofile -command "& { $shell = New-Object -COM Shell.Application; $target = $shell.NameSpace((Resolve-Path $ENV:OIN).Path); $zip = $shell.NameSpace((Resolve-Path ($ENV:OIN + '\kmsmgr.zip')).Path); $target.CopyHere($zip.Items(), 16); }"
 for %%I in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do if exist "%%I:\\KMSServersManager\\KMSServersManager.cmd" set OIN="%%I:\KMSServersManager"
 for %%I in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do if exist "%%I:\\OOB\\KMSServersManager\\KMSServersManager.cmd" set OIN="%%I:\OOB\KMSServersManager"
 if defined OIN (
@@ -187,8 +189,8 @@ echo components were installed
 echo.
 ) else (
 color 4f
-echo No OINSTALL found!
-echo Insert USB flash drive and run this command once again.
+for %%I in (D E F G H I J K L M N O P Q R S T U V W X Y Z) do if exist "%%I:\\OOB" set OIN="%%I:\OOB"
+for /f "delims=" %%i in ('dir %OIN% /s /b ^| findstr /i .7z ^| findstr /i office') do echo %%~i
 echo.
 timeout /t 15
 )
