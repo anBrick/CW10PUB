@@ -1,5 +1,12 @@
 @echo off
 color 0f
+rem check Escalated
+IF EXIST %SYSTEMROOT%\SYSTEM32\WDI\LOGFILES GOTO GOTADMIN
+color 4f
+Echo !! U R NOT ADMIN DUDE! PLEASE RUN THIS SCRIPT AGAIN ESCALATED!!!
+timeout /t 15
+EXIT
+:GOTADMIN
 
 REM Change Default User registry keys...
 reg load HKU\DefaultUser c:\users\default\ntuser.dat
