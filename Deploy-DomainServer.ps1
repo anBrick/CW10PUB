@@ -183,6 +183,10 @@ switch ($Stage)
 				}
 				else {Write-Log -LogName "OS_Deployment.log" -Message ('STAGE: {0} : Skip Network Config by user choise.') -Severity 'Warning'}
 			}
+		#BLOCK 0 == Configure Time Sync Service for local time sources ==
+			& "cmd.exe" "/c w32tm /query /computer:LOCALHOST /configuration"
+			& "cmd.exe" "/c w32tm /config /manualpeerlist:'tik.cesnet.cz ntp.nic.cz tak.cesnet.cz' /syncfromflags:manual /update"
+			& "cmd.exe" "/c net stop w32time & net start w32time"
 		#BLOCK 0 == Enable PS Remoting ==
 			Write-Log -LogName "OS_Deployment.log" -Message ('Running Stage {0}. Enable PS Remote Access...' -f $Stage)
 			Enable-PSRemoting -SkipNetworkProfileCheck -Force
@@ -233,7 +237,7 @@ switch ($Stage)
 			}
 			Get-WindowsFeature | Where-Object { $_.installstate -eq "installed" }
 		#BLOCK 0 == Increase Event Logs space ==
-			get-eventlog * | select Log,OverflowAction,MaximumKilobytes | foreach {Limit-EventLog -LogName $_.log -MaximumSize 1Gb -OverflowAction OverwriteAsNeeded -ea 0}
+			get-eventlog * | select Log,OverflowAction,MaximumKilobytes | foreach {Limit-EventLog -LogName $_.log -MaximumSize $([Math]::Ceiling($_.MaximumKilobytes * 5 / (64*1024)) *(64*1024)) -OverflowAction OverwriteAsNeeded -ea 0}
 		#BLOCK 0 == Disable Shutdown reason requirements ==
 			Write-Log -LogName "OS_Deployment.log" -Message ('Running Stage {0}. Disable Shutdown reason requirements.' -f $Stage)
 			New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Reliability"
