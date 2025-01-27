@@ -237,7 +237,7 @@ switch ($Stage)
 			}
 			Get-WindowsFeature | Where-Object { $_.installstate -eq "installed" }
 		#BLOCK 0 == Increase Event Logs space ==
-			get-eventlog * | select Log,OverflowAction,MaximumKilobytes | foreach {Limit-EventLog -LogName $_.log -MaximumSize $([Math]::Ceiling($_.MaximumKilobytes * 5 / (64*1024)) *(64*1024)) -OverflowAction OverwriteAsNeeded -ea 0}
+			get-eventlog * | select Log,OverflowAction,MaximumKilobytes | foreach {Limit-EventLog -LogName $_.log -MaximumSize $((([math]::Ceiling(($_.MaximumKilobytes * 22000)/65536)) * 65536)) -OverflowAction OverwriteAsNeeded -ea 0}
 		#BLOCK 0 == Disable Shutdown reason requirements ==
 			Write-Log -LogName "OS_Deployment.log" -Message ('Running Stage {0}. Disable Shutdown reason requirements.' -f $Stage)
 			New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Reliability"
