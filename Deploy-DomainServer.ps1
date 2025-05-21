@@ -106,6 +106,10 @@ Function Write-Log
 		Severity = $Severity
 		Message = $Message
 	} | Export-Csv -LiteralPath ($GLOBAL:LogFolder + "\" + $LogName) -Append -NoTypeInformation
+	$source = [IO.Path]::GetFileNameWithoutExtension($MyInvocation.PSCommandPath)
+	if ([string]::IsNullOrEmpty($source)) {$source = [IO.Path]::GetFileNameWithoutExtension($PSCommandPath)}
+	if (-not [System.Diagnostics.EventLog]::SourceExists($source)) {[System.Diagnostics.EventLog]::CreateEventSource($source, "Application")} #register EvtLog Source
+	Write-EventLog -LogName Application -Source $source -EntryType $Status -EventID 33033 -Message $(( '{0} Runtime message:: {1}') -f $MyInvocation.myCommand.name,$Message) -ea 0 
 }
 
 function Save-PersistedState
@@ -185,7 +189,7 @@ switch ($Stage)
 			}
 		#BLOCK 0 == Configure Time Sync Service for local time sources ==
 			& "cmd.exe" "/c w32tm /query /computer:LOCALHOST /configuration"
-			& "cmd.exe" "/c w32tm /config /manualpeerlist:'tik.cesnet.cz ntp.nic.cz tak.cesnet.cz' /syncfromflags:manual /update"
+			& "cmd.exe" "/c w32tm /config /manualpeerlist:'tik.cesnet.cz ntp.nic.cz 2.cz.pool.ntp.org' /syncfromflags:manual /update"
 			& "cmd.exe" "/c net stop w32time & net start w32time"
 		#BLOCK 0 == Enable PS Remoting ==
 			Write-Log -LogName "OS_Deployment.log" -Message ('Running Stage {0}. Enable PS Remote Access...' -f $Stage)
@@ -300,6 +304,7 @@ switch ($Stage)
 				choco install sysinternals --params "'/InstallDir:C:\WINDOWS'"
 				choco install vcredist-all
 				choco install windows-admin-center --params "'/Port:6516'"
+				choco install idle-logoff
 				#choco install rdpwrapper
 				choco install linkshellextension
 				choco install totalcommander --params="'/InstallPath=c:\totalcmd'"
